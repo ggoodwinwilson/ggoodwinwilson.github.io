@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding the PI* 0.6 VLA Model | Geoff Goodwin-Wilson</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div class="site">
+    <aside class="site-sidebar">
+      <div class="avatar" aria-hidden="true">GG</div>
+      <div class="brand-name">Geoff Goodwin-Wilson</div>
+      <div class="brand-role">Electrical Engineering / Machine Learning</div>
+      <p class="sidebar-bio">Quiet logbook for robotics and ML systems built with an electrical engineering toolkit.</p>
+
+      <div class="sidebar-section">
+        <div class="sidebar-heading">Downloads</div>
+        <div class="sidebar-links">
+          <a class="sidebar-link" href="../assets/GeoffGoodwinWilson_Resume.pdf" download>Resume (PDF)</a>
+          <a class="sidebar-link" href="../assets/GeoffGoodwinWilson_Portfolio.pdf" download>Portfolio (PDF)</a>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-heading">Elsewhere</div>
+        <div class="sidebar-links">
+          <a class="sidebar-link" href="https://x.com/geoffgw1" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l7.5 8.3L4.5 20H7l5.3-6.3L16.5 20H20l-7.6-8.4L19.5 4H17l-4.7 5.6L8 4H4z" fill="currentColor" /></svg>
+            X / Twitter
+          </a>
+          <a class="sidebar-link" href="https://github.com/ggoodwinwilson" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.17c0 4.48 2.87 8.28 6.84 9.63.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.17-1.1-1.48-1.1-1.48-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.1.64-1.35-2.22-.26-4.56-1.13-4.56-5 0-1.1.38-2 .99-2.7-.1-.26-.43-1.29.09-2.69 0 0 .83-.27 2.72 1.02a9.2 9.2 0 0 1 4.95 0c1.89-1.29 2.72-1.02 2.72-1.02.52 1.4.19 2.43.09 2.69.62.7 1 1.6 1 2.7 0 3.88-2.34 4.74-4.57 5 .36.32.69.95.69 1.92 0 1.39-.01 2.51-.01 2.85 0 .26.18.58.69.48A10.18 10.18 0 0 0 22 12.17C22 6.58 17.52 2 12 2z" fill="currentColor" /></svg>
+            GitHub
+          </a>
+          <a class="sidebar-link" href="https://www.https://www.linkedin.com/in/geoff-goodwin-wilson-263822126/" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 21H3.43V8.9h3.51V21zM5.18 7.3c-1.13 0-2.06-.95-2.06-2.12C3.12 4 4.05 3 5.18 3s2.06 1 2.06 2.18c0 1.17-.93 2.12-2.06 2.12zM20.89 21h-3.5v-5.87c0-1.4-.03-3.2-1.94-3.2-1.94 0-2.24 1.5-2.24 3.1V21H9.7V8.9h3.36v1.65h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.42 4.27 5.56V21z" fill="currentColor" /></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="site-main">
+      <section class="page-intro">
+        <a class="back-link" href="../index.html">← Back to projects</a>
+        <p class="eyebrow">Project</p>
+        <h1 class="page-title">Understanding the <span class="math">&pi;<sub>0.6</sub></span> VLA Model</h1>
+        <div class="project-meta">November 29th, 2025</div>
+        <p class="lede">I went down a rabbithole of trying to understand Physical Intelligence VLA models and thought this writeup may help others doing the same</p>
+        <div class="tag-row">
+          <span class="tag">rl</span>
+          <span class="tag">vision</span>
+          <span class="tag">robotics</span>
+          <span class="tag">VLA</span>
+          <span class="tag">multi-modal</span>
+        </div>
+        <div class="disclaimer">Disclaimer: This is an unofficial analysis of the <span class="math">&pi;<sub>0.6</sub></span> architecture based on the public papers and open-source code released by Physical Intelligence. All interpretations are my own and do not represent the authors. For the official implementation, please refer to the following sources:<br><a href="https://www.pi.website/blog" target="_blank" rel="noreferrer">https://www.pi.website/blog</a><br><a href="https://github.com/Physical-Intelligence/openpi" target="_blank" rel="noreferrer">https://github.com/Physical-Intelligence/openpi</a></div>
+      </section>
+
+      <article class="entry-content">
+        <h2>Introduction</h2>
+        <p>In this writeup I analyze the Physical Intelligence <span class="math">&pi;<sub>0.6</sub></span> model, a state-of-the-art model for generalized robotics AI. <span class="math">&pi;<sub>0.6</sub></span> code is not open-sourced yet, but they have released a technical paper on the model. We can use the open-sourced <span class="math">&pi;<sub>0</sub></span> model as a framework, and then add <span class="math">&pi;<sub>0.6</sub></span> details to infer what <span class="math">&pi;<sub>0.6</sub></span> looks like.</p>
+
+        <figure class="entry-figure">
+          <img src="../assets/PI0.6 Model.svg" alt="PI0.6 Model diagram" />
+          <figcaption class="figure-subtext">High-level diagram of the <span class="math">&pi;<sub>0.6</sub></span> VLA model</figcaption>
+        </figure>
+
+        <p>The high-level idea of the <span class="math">&pi;</span> VLA models made sense to me, but a lot of the small implementation details were hazy when I tried to explain them to myself. If you're in a similar situation, maybe this write-up can help us understand.</p>
+
+        <h2>High-Level Architecture</h2>
+        <p>The key to understanding <span class="math">&pi;<sub>0.6</sub></span> is to understand how vision, language, and action models are stitched together. I like to think of the vision & language model (VLM) as completely separate from the "action expert" model. The only thing which is shared between the models is the attention mechanism. The action model concatenates it's data vectors with the VLM and therefore it's actions are influenced by the VLMs understanding of the surroundings and objective. Mathematically, multiple dot product operations are being computed in attention between vision, language, and action information.</p>
+
+        <h2>Gemma3, the Vision and Language Backbone</h2>
+        <p><span class="math">&pi;<sub>0.6</sub></span> uses the 4B parameter version of Google Gemma3 to process robot camera feeds and language. Internally, Gemma 3 consists of two main parts: 1, a vision transformer encoder called SigLIP with a modified projection "connector" layer at the end to match the Gemma3 embedding dimension and 2, a small but typical LLM. SigLIP breaks up the robot camera feeds (4x) into patches and encodes them into the LLMs token space. Now the model has a semantic understanding of what the robot cameras see.</p>
+
+        <h2>What order is the Model Trained?</h2>
+        <p>Firstly, Gemma3 is first pre-trained by Google on web-scale data, where it learns to understand what things are. Next, it's fine-tuned by <span class="math">&pi;</span> on robot datasets. Training on robot datasets is crucial so that the VLM gains an understanding of what actions "mean", called "action representations". This is all before the action expert is even introduced.</p>
+
+        <p>So how is the VLM trained on a bunch of robot data without an action expert? How are action tokens represented? <span class="math">&pi;</span>'s solution is to compress all of the robot movement data (joint angles, gripper position, etc.) with the Discrete Cosine Transform (DCT), a compression method used in image compression. They call these special tokens "FAST" tokens.</p>
+        <ol>
+          <li>The whole robot training dataset is compressed into these FAST tokens using the compression algorithm</li>
+          <li>The VLM is trained to replicate these action tokens, one by one, simply by minimizing cross-entropy loss. For example, given this image, task text, and robot state, how close were we to the real robot action that was taken in the dataset?</li>
+        </ol>
+        <p>This strategy is good enough to complete a lot of tasks without even adding a special dedicated action expert. The model can just generate FAST tokens, de-compress them, and send the commands to the robot joints. Unfortunately, inference is far too slow and actions are not smooth. For the robot to generate 1 second of movement, it needs to generate ~60 FAST tokens.</p>
+
+        <h2>The Token Space</h2>
+        <p>Imagine two separate parts which make up the token space. The "Prefix", and the "Suffix". Fine-tuning simply tries to guess the suffix given some prefix.</p>
+
+        <figure class="entry-figure">
+          <img src="../assets/PI0.6 Tokens - VLM Training.svg" alt="PI0.6 Tokens - VLM Training diagram" />
+          <figcaption class="figure-subtext">The VLM token space during FAST token fine tuning</figcaption>
+        </figure>
+
+        <p>The prefix is made up of 3 categories - Vision, language, and physical data called the "proprioceptive" state. Basically, the current joint angles of the robot and gripper positions are summarized and binned into 0-255 integers so the LLM can easily tokenize them as singular tokens.</p>
+
+        <p>A fine-tuning example may look like this:<br>Given the Prefix: &lt;image tokens here&gt; how should the arm move to pick up the red block? State: 25, 97, 190 ... 11<br>Predict the Suffix: &lt;FAST action tokens here&gt;<br>Compare with the real suffix: &lt;more FAST action tokens&gt;<br>Now calculate the cross-entropy loss between prediction and real suffix, and backpropogate.</p>
+
+        <p>Anyways, now the model has internalized all of these action representations from robot-specific fine tuning. It's time to introduce the dedicated action model to operate smoothly. The action expert has a simple objective - given the VLM's attention matrix, predict the next 50 actions. These future actions can be predicted simultaneously with a "flow-matching" model. At a high level, imagine an AI model that generates images, but instead of image pixels, the model is generating a matrix of future joint positions for the robot. At a low level, it starts with an action matrix of pure gaussian noise, and generates a matrix of velocity vectors which guide the action matrix to de-noise itself. The action matrix joint positions move in this learned direction a bit, and repeats this de-noising process 10 times to fully generate the actions. The training dataset for the action expert is labelled demonstrations of the open-sourced "ALOHA" robot architecture, which consists of:</p>
+        <ul>
+          <li>Two 6-DOF arms with grippers</li>
+          <li>A front-facing camera</li>
+          <li>A camera on each gripper</li>
+        </ul>
+
+        <h2>Fine Tuning the Action Expert</h2>
+        <p>This time, we aren't training the VLM at all and only focusing on the flow-matching action expert. During this training phase, the model knows the prefix and the suffix (true actions), but noises the true actions a random amount and tries to predict the velocity matrix to de-noise them:</p>
+
+        <figure class="entry-figure">
+          <img src="../assets/PI0.6 Tokens - VLM Training.svg" alt="PI0.6 Tokens - VLM Training diagram" />
+          <figcaption class="figure-subtext">The VLA token space during action expert fine tuning</figcaption>
+        </figure>
+
+        <p>Here's the action expert training recipe:</p>
+        <ol>
+          <li>Sample Data: Sample a real robot trajectory from the dataset (<span class="math">x<sub>1</sub></span>) and a random noise chunk (<span class="math">x<sub>0</sub></span>).</li>
+          <li>Sample Time: Pick a random time to represent "how de-noised" the matrix is, <span class="math">t &isin; [0, 1]</span>.</li>
+          <li>Interpolate: Create a "noisy" intermediate sample <span class="math">x<sub>t</sub></span> which is just a weighted average: <span class="math">t &middot; x<sub>1</sub> + (1 - t) &middot; x<sub>0</sub></span>.</li>
+          <li>Train: Ask the neural network: "Given this noisy <span class="math">x<sub>t</sub></span> and time <span class="math">t</span>, what vector points directly to <span class="math">x<sub>1</sub></span>?"<br>        ○ The answer is always mathematically simple: <span class="math">x<sub>1</sub> - x<sub>0</sub></span>.</li>
+          <li>Result: The network learns to look at any noisy garbage and tell you which direction points to a valid robot motion.</li>
+        </ol>
+
+        <h2>Fine-tuning vs. Pre-training</h2>
+        <p>I was confused about the difference for a while. From my current understanding:</p>
+        <ul>
+          <li>Both use cross-entropy loss (how far away are we from the right answer?)</li>
+          <li>Pre-training is next word prediction across the whole internet</li>
+          <li>Fine tuning is next word prediction given some specific input</li>
+        </ul>
+        <p>This is how model behaviors and "personalities" are trained into the weights. We can make the models act a certain way given some input that we choose. In thise case, we're just making the Gemma VLM model really good at understanding actions. Another note - fine tuning doesn't need to be reinforcement learning, although it can be.</p>
+
+        <h2>Combining the VLM and Action Expert</h2>
+
+        <figure class="entry-figure">
+          <img src="../assets/PI0.6 Attention.svg" alt="PI0.6 Attention diagram" />
+          <figcaption class="figure-subtext">Combining attention matrices for VLM and action models</figcaption>
+        </figure>
+
+        <p>This is section is more low level, but it's the key to implementing a combined model like this. How does the action expert "pay attention" to the VLM's attention matrix? The trick is to dimension the flow-matching transformer model to match the dimensions of Gemma3 in the attention block only. The following diagram shows how the VLM and action models come together during the attention part of the transformer, and then separate again during MLP. The MLP dimension of the VLM and action expert don't need to match! This is key for unlocking a 4-5x reduction in parameter count for the action expert, and greatly speeding up inference. During inference, VLM is always run first and pays no attention to the action expert. Since it was trained without the action expert, it has nothing to gain from its tokens. The action expert does pay attention to the VLMs tokens though. This is done by attention masking, which is simply setting parts of the attention matrix to 0 that shouldn't attend to each other.</p>
+
+        <h2>Reinforcement Learning</h2>
+        <p>The major innovation in <span class="math">&pi;<sub>0.6</sub></span> is reinforcement learning. Until now, the models have just been trained using immitation learning - the model compares responses with reference datasets, and backpropagates the error. RL is a completely different training paradigm. The key is to reward the model when it does a good job, and train a "Value Model" to tell the VLA how close it is to achieving a reward over time. Now the model can now teach itself by watching replays, and trying out actions.</p>
+
+        <p>First, an entire new model is introduced to judge the value.</p>
+
+        <h2>Supplemental Model Info</h2>
+
+        <h3><span class="math">&pi;<sub>0</sub></span> Hyperparameters:</h3>
+
+        <h4>SigLIP ViT (So400m) Architecture in Gemma 3</h4>
+        <ul>
+          <li>Input format: The model takes a normalized 448×448 RGB image. This is processed into a grid of 32×32 patches (not 16×16).</li>
+          <li>Patch embedding: Each 14×14×3 patch is linearly projected via a stride-14 conv into a 1152‑dim embedding.</li>
+          <li>Token count: Because the input is 448×448 and patches are 14×14, the model produces 1024 patch tokens (32×32), not 256.</li>
+          <li>Positional encoding: SigLIP uses learned absolute 2D positional embeddings. Note: The native pre-trained weights are usually 224×224 (256 tokens); for 448×448 inputs, Gemma 3 interpolates these embeddings to match the 1024 token sequence.</li>
+          <li>Class/global token: No [CLS] token is used (pool_type="none"), so the sequence length is preserved as 1024 tokens.</li>
+          <li>Transformer depth: The encoder is a stack of 27 transformer blocks (matching the So400m specification).</li>
+          <li>Self-attention specifics: Each block uses 16 attention heads. With a model width of 1152, this results in 72‑dim per head (<span class="math">1152 / 16 = 72</span>) and a 1152‑dim concatenated output.</li>
+          <li>Attention mechanism: Each token forms Q/K/V linearly and performs full global self-attention over all 1024 tokens.</li>
+          <li>MLP block: After attention, each token goes through a 2-layer GELU MLP with a hidden size of 4304 (So400m specific width, approx 4× embedding dim).</li>
+          <li>Normalization scheme: Pre-Norm architecture. Every block applies LayerNorm → Attention → Residual, then LayerNorm → MLP → Residual.</li>
+          <li>Final pooling: No pooling is applied; the model outputs the full grid of patch embeddings.</li>
+          <li>Projection head: There is no extra projection head on the encoder output itself (though Gemma 3 may use a multimodal linear connector/projector after this stage to map to the LLM dimension).</li>
+          <li>Output vector: The output is a 1024×1152 tensor of patch features.</li>
+          <li>Training loss: (Contextual Note) While the original SigLIP was trained with sigmoid loss, Gemma 3 freezes or fine-tunes this encoder; the original loss function is not active during Gemma 3 inference.</li>
+        </ul>
+
+        <h4>Gemma 3 4B (Text Decoder) Architecture</h4>
+        <ul>
+          <li>Input format: The model takes a sequence of tokenized text IDs (using a SentencePiece tokenizer with a vocabulary of ~262,208 tokens). The context window is 128,000 tokens.</li>
+          <li>Token embedding: Input tokens are looked up in an embedding matrix of size 262,208×2560, producing a sequence of 2560-dimensional vectors.</li>
+          <li>Positional encoding: Uses Rotary Positional Embeddings (RoPE). A hybrid frequency strategy is used: a base frequency of 10,000 for local layers and 1,000,000 for global layers to support the 128k context.</li>
+          <li>Class/global token: No [CLS] token is used; the model is a causal decoder processing the full sequence for next-token prediction.</li>
+          <li>Transformer depth: The decoder is a stack of 34 transformer blocks.</li>
+          <li>Self-attention specifics: Each block uses 8 attention heads with a head dimension of 256. It employs Grouped-Query Attention (GQA) with 4 Key-Value heads (2:1 query-to-KV ratio). Note that the concatenated attention output (8×256 = 2048) is projected to the model's hidden size of 2560.</li>
+          <li>Attention mechanism: A hybrid "5:1" sliding window approach. The model alternates 5 layers of Local Sliding Window Attention (window size 1024) followed by 1 layer of Global Attention (full context).</li>
+          <li>MLP block: After attention, tokens pass through a Gated MLP (GeGLU) with an intermediate size of 10,240 (<span class="math">&approx;4 &times;</span> the hidden dimension).</li>
+          <li>Normalization scheme: Uses RMSNorm for pre-normalization and post-normalization steps. It uniquely employs QK-Norm (normalizing Queries and Keys) instead of the soft-capping used in Gemma 2.</li>
+          <li>Final pooling: No pooling is applied; the model maintains the sequence of hidden states for the final prediction.</li>
+          <li>Projection head: The final 2560-dimensional hidden states are projected back to the vocabulary size (262,208) via a linear layer (often tied to the input embeddings).</li>
+          <li>Output vector: The output is a [Sequence Length × 262,208] tensor of logits representing the probability distribution for the next token.</li>
+        </ul>
+
+        <p>Training loss: Causal Language Modeling (CLM) loss (Cross-Entropy), minimizing the negative log-likelihood of the next token.</p>
+      </article>
+    </main>
+  </div>
+</body>
+</html>

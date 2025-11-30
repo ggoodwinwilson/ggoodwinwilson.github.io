@@ -253,6 +253,54 @@ blockquote {
   color: var(--muted);
 }
 
+.entry-figure {
+  margin: 16px 0;
+}
+
+.entry-figure img {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.figure-subtext {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.disclaimer {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.math {
+  font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-style: normal;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #f8f7f2;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
 @media (max-width: 900px) {
   .site { grid-template-columns: 1fr; }
   .site-sidebar { position: relative; top: 0; }
