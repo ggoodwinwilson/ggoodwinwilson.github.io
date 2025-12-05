@@ -1,0 +1,34 @@
+---
+title: Electric Longboard Conversion
+date: September 2017
+summary: I attempted to convert a regular longboard to an electric powertrain with limited tools
+---
+ 
+For my very first EE project, I challenged myself to take an ordinary longboard and electrify it.
+
+put image here: assets/electric-longboard-images/electric-longboard.webp
+Subtext: The full longboard assembly: Li-ion battery (black), electronics enclosure, and one-wheel drivetrain.
+
+Drivetrain 
+This was an especially difficult project due to a lack of resources (and knowledge). The motor mount and belt drive were machined from a chunk of 6061 aluminum with a hand drill and file. It consists of a 4:1 gear ratio and an adjustable slotted mount to tension the belt. The motor is a Turnigy Aerodrive SK3 outrunner 3-phase BLDC motor, capable of 2.5kW peak output power.
+
+Electronics 
+The electronics for this build were as simple as possible. I used an open-source, off-the-shelf motor controller called the VESC, which is common in the hobbyist community. It is capable of 60V and 50-80A depending on how the FETs are cooled, so it should be able to match the motor output power fairly well in the electrical domain. I also soldered in a few required electrolytic capacitors to act as the DC bus capacitor.
+
+To charge the DC bus during power-on, I added a manual pre-charge button which trickle-charges the capacitors through a resistor. The user then has to manually plug in a jumper connector after the voltage is high enough. You can tell when it's mostly charged from an LED that turns on at the controller. It is very crude and probably not the most robust solution, but it works.
+
+For remote control, I used a battery-powered, wireless Wii Remote. Luckily, the motor controller supports the transceiver for this remote and can be configured to send torque commands to the motor. The transceiver was wired outside of the electronics enclosure since the metal enclosure acts as a Faraday cage and prevents wireless transmission.
+
+Battery Pack 
+For the battery pack, I wanted to spec something that would have a good balance of range and power. At the time, 18650 cylindrical Li-ion batteries had good energy and power density, and I could also configure them into the pack size that I wanted. The pack is an 8-series, 3-parallel (8S3P) configuration, giving me a max voltage of 33.6V (4.2V * 8) and 7.5Ah, totaling 252Wh of energy. According to most forum users, this was enough to achieve decent-feeling power and range for VESC electric skateboard builds.
+
+To manufacture the pack, the individual cells need to be connected in the right series/parallel configuration. I originally tried to create my own spot welder by purchasing a small lead-acid motorcycle battery and a car starter solenoid to create energy pulses to weld nickel strips along the cells to act as busbars. This sort of worked but was not controlled very well, and sometimes the energy was enough to puncture the electrodes of the batteries (not good). After experimenting a bit, I decided to solder. Soldering lithium-ion battery electrodes isn't great since they can be damaged if heated too much. I used a high-power soldering iron to heat up the terminals quickly enough to prevent heat from propagating too far into the cell. This method works if you rough up the electrodes a little before soldering. After fabrication, the cells were heat-shrunk with plastic black wrapping to get some basic weather and dust protection.
+
+Battery Management and Charging 
+In order to make sure the cells stay balanced, I purchased a lithium-ion battery management PCB from eBay and fabricated a connector to tap each series cell connection. To balance the cells, the BMS is connected to the cell-tap header. Charging is done through an off-the-shelf lithium-ion battery charger by disconnecting the battery from the electronics enclosure, and connecting it to the charger instead.
+
+Results 
+Overall, the design worked. I had significant issues with the hand-fabricated drivetrain and vibration. On bumpy roads, the screws came loose in the drivetrain (and the enclosure), but this was mostly fixed by fine-tuning the aluminum tolerances and using Loctite. I also had belt alignment issues, where the belt tended to one side of the drivetrain. Since my gears didn't have flanges (walls), the belt would eventually fall off. This was also fixed by tuning the drivetrain for better alignment.
+
+I made a video on the build of this longboard which can be viewed here! https://www.youtube.com/watch?v=czH7M9UbVVA
+

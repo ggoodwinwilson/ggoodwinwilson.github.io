@@ -3,76 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SAC + Flow-Matching Actions | Geoff Goodwin-Wilson</title>
+  <title>Soft Actor-Critic Flow Matching | Geoff Goodwin-Wilson</title>
   <link rel="stylesheet" href="../styles.css" />
+  <script src="/sidebar.js?v=2" defer></script>
 </head>
 <body>
   <div class="site">
-    <aside class="site-sidebar">
-      <div class="avatar" aria-hidden="true">GG</div>
-      <div class="brand-name">Geoff Goodwin-Wilson</div>
-      <div class="brand-role">Electrical Engineering / Machine Learning</div>
-      <p class="sidebar-bio">Quiet logbook for robotics and ML systems built with an electrical engineering toolkit.</p>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Downloads</div>
-        <div class="sidebar-links">
-          <a class="sidebar-link" href="../assets/GeoffGoodwinWilson_Resume.pdf" download>Resume (PDF)</a>
-          <a class="sidebar-link" href="../assets/GeoffGoodwinWilson_Portfolio.pdf" download>Portfolio (PDF)</a>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-heading">Elsewhere</div>
-        <div class="sidebar-links">
-          <a class="sidebar-link" href="https://x.com/geoffgw1" target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4l7.5 8.3L4.5 20H7l5.3-6.3L16.5 20H20l-7.6-8.4L19.5 4H17l-4.7 5.6L8 4H4z" fill="currentColor" /></svg>
-            X / Twitter
-          </a>
-          <a class="sidebar-link" href="https://github.com/ggoodwinwilson" target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.17c0 4.48 2.87 8.28 6.84 9.63.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.17-1.1-1.48-1.1-1.48-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.1.64-1.35-2.22-.26-4.56-1.13-4.56-5 0-1.1.38-2 .99-2.7-.1-.26-.43-1.29.09-2.69 0 0 .83-.27 2.72 1.02a9.2 9.2 0 0 1 4.95 0c1.89-1.29 2.72-1.02 2.72-1.02.52 1.4.19 2.43.09 2.69.62.7 1 1.6 1 2.7 0 3.88-2.34 4.74-4.57 5 .36.32.69.95.69 1.92 0 1.39-.01 2.51-.01 2.85 0 .26.18.58.69.48A10.18 10.18 0 0 0 22 12.17C22 6.58 17.52 2 12 2z" fill="currentColor" /></svg>
-            GitHub
-          </a>
-          <a class="sidebar-link" href="https://www.https://www.linkedin.com/in/geoff-goodwin-wilson-263822126/" target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 21H3.43V8.9h3.51V21zM5.18 7.3c-1.13 0-2.06-.95-2.06-2.12C3.12 4 4.05 3 5.18 3s2.06 1 2.06 2.18c0 1.17-.93 2.12-2.06 2.12zM20.89 21h-3.5v-5.87c0-1.4-.03-3.2-1.94-3.2-1.94 0-2.24 1.5-2.24 3.1V21H9.7V8.9h3.36v1.65h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.42 4.27 5.56V21z" fill="currentColor" /></svg>
-            LinkedIn
-          </a>
-        </div>
-      </div>
-    </aside>
+    <aside class="site-sidebar" id="site-sidebar"></aside>
 
     <main class="site-main">
       <section class="page-intro">
         <a class="back-link" href="../index.html">← Back to projects</a>
         <p class="eyebrow">Project</p>
-        <h1 class="page-title">SAC + Flow-Matching Actions</h1>
-        <div class="project-meta">2024 · Robotics RL</div>
-        <p class="lede">A soft actor-critic policy paired with a flow-matched action generator to smooth trajectories and reduce jitter on hardware.</p>
-        <div class="meta-grid">
-          <div class="meta-box"><strong>Focus</strong><span>Control smoothness</span></div>
-          <div class="meta-box"><strong>Stack</strong><span>Python, PyTorch</span></div>
-          <div class="meta-box"><strong>Artifacts</strong><span>Checkpoints, rollout videos</span></div>
-        </div>
+        <h1 class="page-title">Soft Actor-Critic Flow Matching</h1>
+        <div class="project-meta">December 2025 · Robotics RL</div>
       </section>
 
       <article class="entry-content">
-        <h2>Overview</h2>
-        <p>Coupled SAC with a flow-matching model that proposes action trajectories respecting hardware limits. The flow model shapes proposals; SAC handles reward-driven selection.</p>
-
-        <h2>Highlights</h2>
-        <ul>
-          <li>Flow proposals trained on smoothed demonstrations to set a baseline trajectory prior.</li>
-          <li>Safety envelope baked into proposals to avoid saturation and jerk.</li>
-          <li>Closed-loop evaluation with rollouts saved for offline review.</li>
-        </ul>
-
-        <div class="media-placeholder">Drop rollout videos, jerk/acceleration plots, and architecture diagrams here.</div>
-
-        <h2>Notes</h2>
-        <p>Reward shaping focused on smooth accelerations and task success. Flow proposals reduced SAC action noise without hurting convergence.</p>
-
-        <h2>Artifacts</h2>
-        <p>Policy checkpoints, flow model weights, and evaluation scripts are organized for hardware tests or further tuning.</p>
+        <p>Trying to use soft actor-critic RL to train a robot agent using a flow-matching model. Coming soon.</p>
       </article>
     </main>
   </div>
