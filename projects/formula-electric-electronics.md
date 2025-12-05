@@ -1,6 +1,7 @@
 ---
 title: Formula Electric Electronics
-date: Aug 2018 – May 2020
+date: 2018-08-01
+date_range: Aug 2018 - May 2020
 summary: High-power inverter design and validation for a Formula electric platform.
 ---
 
