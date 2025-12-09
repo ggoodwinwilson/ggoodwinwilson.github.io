@@ -133,7 +133,7 @@
         <p>The agent is trained using Proximal Policy Optimization (PPO), an on-policy gradient method that strikes a balance between ease of implementation and sample efficiency.</p>
 
         <h3>Generalized Advantage Estimation (GAE)</h3>
-        <p>To reduce the variance of the gradient estimates, I implemented GAE. Instead of using raw rewards, we calculate the Advantage <span class="math">A<sub>t</sub></span>, which measures how much better an action was compared to the baseline value function <span class="math">V(s)</span>. The code computes the Temporal Difference (TD) error <span class="math">&delta;<sub>t</sub></span> first:</p>
+        <p>To reduce the variance of the gradient estimates, GAE is used. Instead of using raw rewards in PPO, we calculate the Advantage <span class="math">A<sub>t</sub></span>, which measures how much better an action was compared to the baseline value function <span class="math">V(s)</span>. The code computes the Temporal Difference (TD) error <span class="math">&delta;<sub>t</sub></span> first:</p>
         <div class="math-block"><span class="math">&delta;<sub>t</sub> = r<sub>t</sub> + &gamma; V(s<sub>t+1</sub>) - V(s<sub>t</sub>)</span></div>
         <p>Then, it computes the exponentially weighted average of these errors:</p>
         <div class="math-block"><span class="math">A<sub>t</sub> = &Sigma;<sub>k=0</sub><sup>T-t-1</sup> (&gamma;&lambda;)<sup>k</sup> &delta;<sub>t+k</sub></span></div>
