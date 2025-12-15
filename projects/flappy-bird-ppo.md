@@ -79,6 +79,13 @@ The Transformer backbone is shared between the policy and value heads. Since the
 •	Policy Head: Outputs logits for 2 actions (Flap / Do Nothing).
 •	Value Head: Outputs a scalar estimate of the state value.
 
+put two gifs side by side here:
+poorly-trained-value.gif
+well-trained-value.gif
+subtext: "Comparison of value function estimates from a poorly trained model (left) versus a well-trained model (right)."
+
+The value head learns to predict the expected return from the current state, which is crucial for calculating the advantage estimates used in PPO. We can observe the difference in value function shape from poorly and well trained models. On the well-trained model, value increases when it's 100% certain that it will make it through the current obstacle, and sharply decreases when it's uncertain. The value function can drop drastically during "difficult" scenarios where obstacles have large height differences.
+
 Training Stability: Using Entropy to Encourage Exploration
 I encountered a significant issue during training where the model got stuck in a permanent "flap" action loop, causing the agent to hit the ceiling and lose immediately.
 

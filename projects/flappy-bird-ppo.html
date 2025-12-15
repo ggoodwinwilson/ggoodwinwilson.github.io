@@ -100,16 +100,26 @@
           <figcaption class="figure-subtext">Fully trained transformer attention visualization</figcaption>
         </figure>
 
-        <h3>3. Value Head vs. Policy Head</h3>
-        <p>The Transformer backbone is shared between the policy and value heads. Since they both rely on the same state history to derive their output and they’re trained simultaneously, sharing the backbone is computationally efficient. The final token's embedding (<span class="math">x[:, -1, :]</span>) is passed to two separate linear heads:</p>
-        <ul>
-          <li>Policy Head: Outputs logits for 2 actions (Flap / Do Nothing).</li>
-          <li>Value Head: Outputs a scalar estimate of the state value.</li>
-        </ul>
+	        <h3>3. Value Head vs. Policy Head</h3>
+	        <p>The Transformer backbone is shared between the policy and value heads. Since they both rely on the same state history to derive their output and they’re trained simultaneously, sharing the backbone is computationally efficient. The final token's embedding (<span class="math">x[:, -1, :]</span>) is passed to two separate linear heads:</p>
+	        <ul>
+	          <li>Policy Head: Outputs logits for 2 actions (Flap / Do Nothing).</li>
+	          <li>Value Head: Outputs a scalar estimate of the state value.</li>
+	        </ul>
 
-        <h2>Training Stability: Using Entropy to Encourage Exploration</h2>
-        <p>I encountered a significant issue during training where the model got stuck in a permanent "flap" action loop, causing the agent to hit the ceiling and lose immediately.</p>
-        <p>My hypothesis is that because the sparse reward signal is difficult to find, the agent discovers a local minimum (flapping constantly) and decides it is the "safest" policy.</p>
+	        <figure class="entry-figure value-comparison">
+	          <div class="figure-row">
+	            <img src="../assets/flappy-bird-images/poorly-trained-value.gif" alt="Poorly trained value function estimates" />
+	            <img src="../assets/flappy-bird-images/well-trained-value.gif" alt="Well-trained value function estimates" />
+	          </div>
+	          <figcaption class="figure-subtext">Comparison of value function estimates from a poorly trained model (left) versus a well-trained model (right).</figcaption>
+	        </figure>
+
+	        <p>The value head learns to predict the expected return from the current state, which is crucial for calculating the advantage estimates used in PPO. We can observe the difference in value function shape from poorly and well trained models. On the well-trained model, value increases when it's 100% certain that it will make it through the current obstacle, and sharply decreases when it's uncertain. The value function can drop drastically during "difficult" scenarios where obstacles have large height differences.</p>
+
+	        <h2>Training Stability: Using Entropy to Encourage Exploration</h2>
+	        <p>I encountered a significant issue during training where the model got stuck in a permanent "flap" action loop, causing the agent to hit the ceiling and lose immediately.</p>
+	        <p>My hypothesis is that because the sparse reward signal is difficult to find, the agent discovers a local minimum (flapping constantly) and decides it is the "safest" policy.</p>
 
         <figure class="entry-figure">
           <img src="../assets/flappy-bird-images/failure-path.gif" alt="Agent stuck in flap loop" />

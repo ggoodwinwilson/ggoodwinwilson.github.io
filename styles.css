@@ -455,6 +455,23 @@ blockquote {
   max-width: min(77%, 847px);
 }
 
+.flappy-bird .figure-row {
+  align-items: stretch;
+  grid-auto-rows: 340px;
+}
+
+.flappy-bird .entry-figure.value-comparison .figure-row {
+  grid-auto-rows: 408px;
+}
+
+.flappy-bird .figure-row img {
+  width: auto;
+  max-width: none;
+  height: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 .electric-longboard .entry-figure img {
   max-width: 60%;
 }
