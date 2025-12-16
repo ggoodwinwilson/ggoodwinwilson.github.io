@@ -162,24 +162,24 @@
         <ul>
           <li>Policy &amp; Value Network: Separate</li>
           <li>Input Dimension: 180 (observation dim)</li>
-          <li>Hidden Dimension: 128 / 512</li>
+          <li>Hidden Dimension: 256 / 2048</li>
           <li>Output Dimension: 2 (probabilities)</li>
           <li>Layers: 2 (Fully Connected)</li>
-          <li>Number of Parameters: []</li>
+          <li>Number of Parameters: [47k (256), 374k (2048)]</li>
         </ul>
 
         <p><strong>Transformer Based Model:</strong></p>
         <ul>
           <li>Policy &amp; Value Network: Combined (Shared Backbone)</li>
-          <li>Embedding Dimension (<span class="math">d<sub>model</sub></span>): 128 / 512</li>
+          <li>Embedding Dimension (<span class="math">d<sub>model</sub></span>): 32 / 128</li>
           <li>Attention Heads: 4</li>
           <li>Layers: 4</li>
           <li>Sequence Length: 10 (Sliding window)</li>
-          <li>Feed Forward Dim: 512 / 2048 (<span class="math">4 &times; d<sub>model</sub></span>)</li>
+          <li>Feed Forward Dim: (<span class="math">4 &times; d<sub>model</sub></span>)</li>
           <li>Activation: GELU</li>
           <li>Normalization: LayerNorm (Pre-norm)</li>
           <li>Dropout: 0.1</li>
-          <li>Number of Parameters: []</li>
+          <li>Number of Parameters: [57k (32), 815k (128)]</li>
         </ul>
 
         <p><strong>PPO Hyperparameters</strong></p>
