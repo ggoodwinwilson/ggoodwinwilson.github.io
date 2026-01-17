@@ -75,9 +75,9 @@
 
         <p>The Core acts as the brains of the battery pack. It handles all pack-related high-voltage management, such as start-up and shut-down contactor sequencing (precharge and discharge), as well as pack-level voltage and current measurement, state-of-charge estimation, and fault handling. The microcontroller is a 64-pin STM32F4, which has the right peripherals to support the functionality of this system:</p>
         <ul>
-          <li>-SPI to communicate over isoSPI to the modules (more later).</li>
-          <li>-I2C for EEPROM communication to store the state-of-charge estimation while power is off.</li>
-          <li>-Analog readings of the bus voltage and current sensors, which are precisely synchronized with a timer to measure state-of-charge.</li>
+          <li>SPI to communicate over isoSPI to the modules (more later).</li>
+          <li>I2C for EEPROM communication to store the state-of-charge estimation while power is off.</li>
+          <li>Analog readings of the bus voltage and current sensors, which are precisely synchronized with a timer to measure state-of-charge.</li>
         </ul>
 
         <figure class="entry-figure">
