@@ -212,7 +212,7 @@
           <li>If the Advantage (<span class="math">A</span>) &gt; Threshold (<span class="math">&epsilon;<sub>&ell;</sub></span>), then <span class="math">I<sub>t</sub> = 1</span> (Positive). Otherwise, <span class="math">I<sub>t</sub> = 0</span> (Negative).</li>
         </ul>
         
-        <p><strong>2. Why Two Terms? (Classifier-Free Guidance)</strong><br>You might wonder, "Why not just use Term 2?"<br><span class="math">&pi;</span> utilized a technique called Classifier-Free Guidance (CFG), commonly used in image generation (like Stable Diffusion).<br>By training the model to predict actions both with and without the indicator, the model learns a vector space where it can mathematically separate "generic behavior" from "optimized behavior"</p>
+        <p><strong>2. Why Two Terms? (Classifier-Free Guidance)</strong><br>You might wonder, "Why not just use Term 2?"<br><span class="math">&pi;</span> utilized a technique called Classifier-Free Guidance (CFG), commonly used in image generation (like Stable Diffusion), <a href="https://youtu.be/iv-5mZ_9CPY?si=Vc6s2xT89duEEA39&t=1321" target="_blank" rel="noreferrer">explained well here</a>.<br>By training the model to predict actions both with and without the indicator, the model learns a vector space where it can mathematically separate "generic behavior" from "optimized behavior"</p>
         <ul>
           <li>It allows the model to be robust even if the advantage signal is noisy.</li>
           <li>It enables a specific inference trick where you can "amplify" the positive signal (setting <span class="math">&beta; &gt; 1</span>), effectively steering the robot away from the average behavior and toward the positive behavior</li>
