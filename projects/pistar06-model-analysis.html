@@ -94,6 +94,54 @@
           <li>Result: The model learns take a noisy action matrix and tell you which direction points to a valid robot motion.</li>
         </ol>
 
+        <h2>LoRA (Low Rank Adaption Matrix) Training</h2>
+        <p>PI models use a technique called LoRA for fine-tune training which saves ample memory:</p>
+        <ul>
+          <li>Inference: >8GB</li>
+          <li>Fine-Tuning (LoRA): >22.5GB</li>
+          <li>Fine-Tuning (Full): >70GB</li>
+        </ul>
+
+        <p>How can the memory requirement be reduced by ~32%?</p>
+
+        <p>First principles - why do we need memory during training? The code needs to remember:</p>
+        <ul>
+          <li>The model weights so we can modify them</li>
+          <li>The gradient of each weight to update the weights with gradient descent</li>
+          <li>Gradient "momentum", tracks update direction - needed for optimizer</li>
+          <li>Gradient "variance", scales the learning rate per parameter - needed for optimizer</li>
+        </ul>
+
+        <p>These requirements lead to ~16 bytes per model parameter, driving the 70GB requirement for full fine-tuning. With LoRA, we can drastically decrease this through making one key assumption: when a model is fine-tuned, the change required in the weight matrices is not as complex as the original model, or, the weight matrix has low intrinsic rank.</p>
+
+        <ol>
+          <li>Full-rank update: Suppose we have a 4096 x 4096 matrix. All ~16million values can change independently.</li>
+          <li>Low-rank update: By setting the weight matrix to two lower rank decomposition matrices, we can explore a much smaller subspace.</li>
+        </ol>
+
+        <div class="math-block"><span class="math">Weights = W + A × B</span></div>
+
+        <ul>
+          <li>Dim(W): 4096 x 4096</li>
+          <li>Dim(A): 4096 x 8</li>
+          <li>Dim(B): 8 x 4096</li>
+        </ul>
+
+        <p>Let's just freeze W and only update A and B during fine-tuning. Again, we're assuming that adding A × B to the original pre-trained weights is enough to represent the fine-tuned change to the weights. We multiple by a factor of alpha/rank (a/r) to average the amount of summations for the matmul product.</p>
+
+        <p>Explained mathematically:</p>
+
+        <div class="math-block"><span class="math">W = W<sub>0</sub> + (α/r) BA</span></div>
+
+        <p>Explained visually:</p>
+
+        <figure class="entry-figure wide">
+          <img src="../assets/lora_training.svg" alt="LoRA training diagram" />
+          <figcaption class="figure-subtext">Diagram of LoRA training for a single linear layer</figcaption>
+        </figure>
+
+        <p>Note that LoRA applies to matmul layers only, such as up-projections, down-projections, attention matrices, etc. A and B are initialized to random noise and 0, so they initially multiply to 0 and can build up from there.</p>
+
         <h2>Combining the VLM and Action Expert</h2>
         
         <p>This section is more low level, but it's the key to implementing a multi-modal like this. How does the action expert "pay attention" to the VLM's attention matrix? The trick is to dimension the flow-matching transformer model to match the dimensions of Gemma3 in the attention block only. The following diagram shows how the VLM and action models come together during the attention part of the transformer, and then separate again during MLP. The MLP dimension of the VLM and action expert don't need to match! This is how a 4-5x reduction in parameter count is unlocked for the action expert and greatly speeding up inference.</p>
