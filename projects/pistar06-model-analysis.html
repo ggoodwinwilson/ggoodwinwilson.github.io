@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Understanding the π*0.6 VLA Model | Geoff Goodwin-Wilson</title>
   <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
   <script src="/sidebar.js?v=2" defer></script>
 </head>
 <body>
@@ -15,24 +19,24 @@
 	      <section class="page-intro">
 	        <a class="back-link" href="../index.html">← Back to projects</a>
 	        <p class="eyebrow">Writeup</p>
-	        <h1 class="page-title">Understanding the <span class="math">&pi;*0.6</span> VLA Model</h1>
+	        <h1 class="page-title">Understanding the $\pi^*0.6$ VLA Model</h1>
 	        <div class="project-meta">November 2025 · Robotics & ML</div>
-	        <div class="disclaimer">Disclaimer: This is an unofficial analysis of the <span class="math">&pi;*0.6</span> architecture based on the public papers and open-source code released by Physical Intelligence. All interpretations are my own and do not represent the authors. For the official implementation, please refer to the following sources:<br><a href="https://www.pi.website/blog" target="_blank" rel="noreferrer">https://www.pi.website/blog</a><br><a href="https://github.com/Physical-Intelligence/openpi" target="_blank" rel="noreferrer">https://github.com/Physical-Intelligence/openpi</a></div>
+	        <div class="disclaimer">Disclaimer: This is an unofficial analysis of the $\pi^*0.6$ architecture based on the public papers and open-source code released by Physical Intelligence. All interpretations are my own and do not represent the authors. For the official implementation, please refer to the following sources:<br><a href="https://www.pi.website/blog" target="_blank" rel="noreferrer">https://www.pi.website/blog</a><br><a href="https://github.com/Physical-Intelligence/openpi" target="_blank" rel="noreferrer">https://github.com/Physical-Intelligence/openpi</a></div>
 	      </section>
 
       <article class="entry-content">
         <h2>Introduction</h2>
-        <p>I recently went down a rabbithole trying to understand Physical Intelligence VLA models and thought this deep dive may help others doing the same. In this writeup I analyze the Physical Intelligence <span class="math">&pi;*0.6</span> model, a state-of-the-art brain for generalized robotics AI. Physical Intelligence has not open-sourced <span class="math">&pi;*0.6</span> code yet, but they have released a <a href="https://www.pi.website/download/pistar06.pdf" target="_blank" rel="noreferrer">technical white-paper</a> on the model. We can use the open sourced <span class="math">&pi;<sub>0</sub></span> model as a framework, and then combine details from the whitepaper to infer what the <span class="math">&pi;*0.6</span> architecture is.</p>
+        <p>I recently went down a rabbithole trying to understand Physical Intelligence VLA models and thought this deep dive may help others doing the same. In this writeup I analyze the Physical Intelligence $\pi^*0.6$ model, a state-of-the-art brain for generalized robotics AI. Physical Intelligence has not open-sourced $\pi^*0.6$ code yet, but they have released a <a href="https://www.pi.website/download/pistar06.pdf" target="_blank" rel="noreferrer">technical white-paper</a> on the model. We can use the open sourced $\pi_0$ model as a framework, and then combine details from the whitepaper to infer what the $\pi^*0.6$ architecture is.</p>
 
         <figure class="entry-figure wide">
           <img src="../assets/PI0.6 Model.svg" alt="π*0.6 Model diagram" />
-          <figcaption class="figure-subtext">Diagram of the <span class="math">&pi;*0.6</span> VLA model</figcaption>
+          <figcaption class="figure-subtext">Diagram of the $\pi^*0.6$ VLA model</figcaption>
         </figure>
 
-        <p>I found that the high-level idea of <span class="math">&pi;</span> VLA models made sense to me, but a lot of the small implementation details were hazy when I tried to explain them to myself. If you're in a similar situation, maybe this write-up can help us understand.</p>
+        <p>I found that the high-level idea of $\pi$ VLA models made sense to me, but a lot of the small implementation details were hazy when I tried to explain them to myself. If you're in a similar situation, maybe this write-up can help us understand.</p>
 
         <h2>Overall Architecture</h2>
-        <p>The key to understanding <span class="math">&pi;*0.6</span> is to understand how vision, language, and action models are stitched together. I like to think of the vision & language model (VLM) as completely separate from the "action expert" model. The only element shared between them is the attention mechanism. The action model concatenates it's data vectors with the VLM and therefore it's actions are influenced by the VLM's understanding of the surroundings and objective. Mathematically, multiple dot product operations are computed in attention between vision, language, and action information, which is ultimately what allows the robot to make intelligent actions.</p>
+        <p>The key to understanding $\pi^*0.6$ is to understand how vision, language, and action models are stitched together. I like to think of the vision & language model (VLM) as completely separate from the "action expert" model. The only element shared between them is the attention mechanism. The action model concatenates it's data vectors with the VLM and therefore it's actions are influenced by the VLM's understanding of the surroundings and objective. Mathematically, multiple dot product operations are computed in attention between vision, language, and action information, which is ultimately what allows the robot to make intelligent actions.</p>
 
         <h2>Gemma3, the Vision and Language Backbone</h2>
         <figure class="entry-figure gemma">
@@ -40,12 +44,12 @@
           <figcaption class="figure-subtext">Gemma3 Vision Language Model Diagram</figcaption>
         </figure>
 
-        <p><span class="math">&pi;*0.6</span> piggybacks off the 4B parameter version of Google Gemma3 to process robot camera feeds and language. Internally, Gemma 3 consists of two main parts: 1, a vision transformer encoder called SigLIP with a modified projection "connector" layer at the end to match the Gemma3 embedding dimension and 2, a small but typical LLM. SigLIP breaks up 4 robot camera feeds into patches and encodes them into the LLMs token space. Now the model has a semantic understanding of what the robot cameras see from vision and language tokens attending to each other.</p>
+        <p>$\pi^*0.6$ piggybacks off the 4B parameter version of Google Gemma3 to process robot camera feeds and language. Internally, Gemma 3 consists of two main parts: 1, a vision transformer encoder called SigLIP with a modified projection "connector" layer at the end to match the Gemma3 embedding dimension and 2, a small but typical LLM. SigLIP breaks up 4 robot camera feeds into patches and encodes them into the LLMs token space. Now the model has a semantic understanding of what the robot cameras see from vision and language tokens attending to each other.</p>
 
         <h2>In What Order is the Model Trained?</h2>
         <p>Firstly, Gemma3 is first pre-trained by Google on web-scale data, where it learns to understand what things are. Next, it's fine-tuned by Physical Intelligence on robot datasets. Training on robot datasets is crucial so that the VLM gains an understanding of what actions mean, called "action representations". This is all before the action expert is even introduced.</p>
 
-        <p>So how is the VLM trained on a bunch of robot data without an action expert? How are action tokens represented? <span class="math">&pi;</span>'s solution is to compress all of the robot movement data (joint angles, gripper position, etc.) with the Discrete Cosine Transform (DCT), a compression method used in image compression. They call these special tokens "FAST" tokens.</p>
+        <p>So how is the VLM trained on a bunch of robot data without an action expert? How are action tokens represented? $\pi$'s solution is to compress all of the robot movement data (joint angles, gripper position, etc.) with the Discrete Cosine Transform (DCT), a compression method used in image compression. They call these special tokens "FAST" tokens.</p>
         <ol>
           <li>All of the robot actuator data in the training dataset is compressed into these FAST tokens using DCT compression.</li>
           <li>The VLM is trained to replicate these action tokens by generating FAST tokens one by one, simply by minimizing cross-entropy loss. For example, given this image, task text, and robot state, how close were we to the real robot action that was taken in the dataset?</li>
@@ -87,10 +91,10 @@
 
         <p>Here's the action expert training recipe:</p>
         <ol>
-          <li>Sample Data: Sample a real robot trajectory from the dataset (<span class="math">x<sub>1</sub></span>) and a random  for the action matrix (<span class="math">x<sub>0</sub></span>).</li>
-          <li>Sample Time: Pick a random time to represent "how de-noised" the matrix is.<div class="math-block"><span class="math">t ∈ [0, 1]</span></div></li>
-          <li>Interpolate: Create a "noisy" intermediate sample <span class="math">x<sub>t</sub></span> which is just a weighted average.<div class="math-block"><span class="math">x<sub>t</sub> = t · x<sub>1</sub> + (1 - t) · x<sub>0</sub></span></div></li>
-          <li>Train: Ask the model: "Given this noisy <span class="math">x<sub>t</sub></span> and time <span class="math">t</span>, what vector points directly to <span class="math">x<sub>1</sub></span>?" The answer is always mathematically simple:<div class="math-block"><span class="math">x<sub>1</sub> - x<sub>0</sub></span></div></li>
+          <li>Sample Data: Sample a real robot trajectory from the dataset ($x_1$) and a random for the action matrix ($x_0$).</li>
+          <li>Sample Time: Pick a random time to represent "how de-noised" the matrix is. $$t \in [0, 1]$$</li>
+          <li>Interpolate: Create a "noisy" intermediate sample $x_t$ which is just a weighted average. $$x_t = t \cdot x_1 + (1 - t) \cdot x_0$$</li>
+          <li>Train: Ask the model: "Given this noisy $x_t$ and time $t$, what vector points directly to $x_1$?" The answer is always mathematically simple: $$x_1 - x_0$$</li>
           <li>Result: The model learns take a noisy action matrix and tell you which direction points to a valid robot motion.</li>
         </ol>
 
@@ -119,7 +123,7 @@
           <li>Low-rank update: By setting the weight matrix to two lower rank decomposition matrices, we can explore a much smaller subspace.</li>
         </ol>
 
-        <div class="math-block"><span class="math">Weights = W + A × B</span></div>
+        $$\text{Weights} = W + A \times B$$
 
         <ul>
           <li>Dim(W): 4096 x 4096</li>
@@ -131,7 +135,7 @@
 
         <p>Explained mathematically:</p>
 
-        <div class="math-block"><span class="math">W = W<sub>0</sub> + (α/r) BA</span></div>
+        $$W = W_0 + \frac{\alpha}{r} BA$$
 
         <p>Explained visually:</p>
 
@@ -154,11 +158,11 @@
         <p>During inference, the VLM portion of the model is always run first and pays no attention to the action expert. Since it was trained without the action expert, it has nothing to gain from attending to its tokens. Conversely, the action expert does pay attention to the VLMs tokens. This is achieved by "attention masking", which is simply setting parts of the attention matrix to 0 that shouldn't attend to each other. Attention masking is illustrated in the diagram above.</p>
 
         <h2>Reinforcement Learning</h2>
-        <p>The major innovation in <span class="math">&pi;*0.6</span> versus previous models is adding reinforcement learning. Until now, the models have just been trained to imatate the training dataset - they compare outputs with the reference outputs, and backpropagate the error. RL is a completely different training paradigm where we reward the model when it does a good job. This is done by training a completely new "Value Model" to tell the VLA how close it is to achieving a reward over time. It acts as a judge, and is also called a "critic" in many RL methods for this reason.</p>
+        <p>The major innovation in $\pi^*0.6$ versus previous models is adding reinforcement learning. Until now, the models have just been trained to imatate the training dataset - they compare outputs with the reference outputs, and backpropagate the error. RL is a completely different training paradigm where we reward the model when it does a good job. This is done by training a completely new "Value Model" to tell the VLA how close it is to achieving a reward over time. It acts as a judge, and is also called a "critic" in many RL methods for this reason.</p>
 
         <figure class="entry-figure value-model">
           <img src="../assets/PI0.6 Value Model.svg" alt="PI0.6 Value Model diagram" />
-          <figcaption class="figure-subtext">The Value Model of <span class="math">&pi;*0.6</span>, based on Gemma3. It takes the same input context as the VLM.</figcaption>
+          <figcaption class="figure-subtext">The Value Model of $\pi^*0.6$, based on Gemma3. It takes the same input context as the VLM.</figcaption>
         </figure>
 
         <p>If i had to breifly summarize how reinforcement learning works with this model, I'd say the following:</p>
@@ -177,10 +181,10 @@
 
         <p>Advantage is simplified as "positive" for good actions and "negative" for bad actions for every step in the training data. Now when we train the model, a token is added to the language portion of the token space called the "advantage indicator". It will literally say "advantage: positive" or "advantage: negative".</p>
 
-        <p><strong>RL Training</strong><br>There are 4 distinct phases of the RL training paradigm for <span class="math">&pi;*0.6</span>.</p>
+        <p><strong>RL Training</strong><br>There are 4 distinct phases of the RL training paradigm for $\pi^*0.6$.</p>
         <ol>
           <li>Pre-Training: What was "fine-tuning and pre-training" is now just called "pre-training", which is everything that was covered for training thus far.</li>
-          <li>Offline RL Pre-training: In this phase, the exact same training data is used, but this time the "advantage indicator" token is added to the data. The model doesn't know it yet, but it's associating good actions with "advantage: positive" and bad actions with "advantage: negative". The dataset includes autonomous demos with the base <span class="math">&pi;*0.6</span> model trained in 1. and also human tele-operated data. The human captured data is all labelled as "advantage: positive".</li>
+          <li>Offline RL Pre-training: In this phase, the exact same training data is used, but this time the "advantage indicator" token is added to the data. The model doesn't know it yet, but it's associating good actions with "advantage: positive" and bad actions with "advantage: negative". The dataset includes autonomous demos with the base $\pi^*0.6$ model trained in 1. and also human tele-operated data. The human captured data is all labelled as "advantage: positive".</li>
           <li>Offline RL + SFT (Supervised Fine Tuning): During this stage, the model is only trained on human expert teleoperation data. All of the advantage indicators are set to positive in the training dataset, regardless of the value model output. It's not super clear to me what association the robot is making during this training phase. It might be learning a strong association of the task request and the specific actions done by the expert. Since it's all labelled as positive advantage data, the policy will strongly prefer actions like the dataset, and maybe disregard other action representations that aren't useful for the task specified.</li>
           <li>RECAP: Finally comes the "RECAP" step. The robot runs autonomously, and gets corrected by humans via intervention when it fails. The value model grades all of this data, force labelling all human interventions as advantage positive. The policy performs a bunch of rollouts, trains on them, and then continually repeats this process as needed to improve.</li>
         </ol>
@@ -190,44 +194,44 @@
         <h2>The RL Policy Objective</h2>
         <p>There's a lot of math in the paper which provides mathematical grounding for what they're doing here with RL. One of the main equations is eqn 3, the policy objective. The equation minimizes the Negative Log-Likelihood (which is the standard way to train language models), but it splits the training into two simultaneous tasks:</p>
         
-        <div class="math-block"><span class="math">min<sub>&theta;</sub> E<sub>D<sub>&pi;ref</sub></sub> [ - log &pi;<sub>&theta;</sub>(a<sub>t</sub> | o<sub>t</sub>, &ell;) - &alpha; log &pi;<sub>&theta;</sub>(a<sub>t</sub> | I<sub>t</sub>, o<sub>t</sub>, &ell;) ]</span></div>
+        $$\min_{\theta} \mathbb{E}_{D_{\pi_{\text{ref}}}} \left[ - \log \pi_{\theta}(a_t | o_t, \ell) - \alpha \log \pi_{\theta}(a_t | I_t, o_t, \ell) \right]$$
         
         <p><strong>Term 1 (Unconditional Learning):</strong></p>
         <ul>
-          <li>The Input: Image (<span class="math">o<sub>t</sub></span>) + Text Command (<span class="math">&ell;</span>).</li>
+          <li>The Input: Image ($o_t$) + Text Command ($\ell$).</li>
           <li>The Task: "Just copy the action."</li>
           <li>What it learns: The robot learns the general average behavior of the dataset, ignoring whether the specific action was good or bad.</li>
         </ul>
         
         <p><strong>Term 2 (Conditional Learning):</strong></p>
         <ul>
-          <li>The Input: Image (<span class="math">o<sub>t</sub></span>) + Text Command (<span class="math">&ell;</span>) + Advantage Indicator (<span class="math">I<sub>t</sub></span>).</li>
-          <li>The Task: "Copy the action, knowing that this action is labeled as '<span class="math">I<sub>t</sub></span>'."</li>
+          <li>The Input: Image ($o_t$) + Text Command ($\ell$) + Advantage Indicator ($I_t$).</li>
+          <li>The Task: "Copy the action, knowing that this action is labeled as '$I_t$'."</li>
           <li>What it learns: The specific correlation between the tag (Positive/Negative) and the quality of the action.</li>
         </ul>
         
-        <p><strong>The Indicator (<span class="math">I<sub>t</sub></span>):</strong></p>
+        <p><strong>The Indicator ($I_t$):</strong></p>
         <ul>
           <li>This is the binary switch calculated by the value model.</li>
-          <li>If the Advantage (<span class="math">A</span>) &gt; Threshold (<span class="math">&epsilon;<sub>&ell;</sub></span>), then <span class="math">I<sub>t</sub> = 1</span> (Positive). Otherwise, <span class="math">I<sub>t</sub> = 0</span> (Negative).</li>
+          <li>If the Advantage ($A$) > Threshold ($\epsilon_{\ell}$), then $I_t = 1$ (Positive). Otherwise, $I_t = 0$ (Negative).</li>
         </ul>
         
-        <p><strong>2. Why Two Terms? (Classifier-Free Guidance)</strong><br>You might wonder, "Why not just use Term 2?"<br><span class="math">&pi;</span> utilized a technique called Classifier-Free Guidance (CFG), commonly used in image generation (like Stable Diffusion), <a href="https://youtu.be/iv-5mZ_9CPY?si=Vc6s2xT89duEEA39&t=1321" target="_blank" rel="noreferrer">explained well here</a>.<br>By training the model to predict actions both with and without the indicator, the model learns a vector space where it can mathematically separate "generic behavior" from "optimized behavior"</p>
+        <p><strong>2. Why Two Terms? (Classifier-Free Guidance)</strong><br>You might wonder, "Why not just use Term 2?"<br>$\pi$ utilized a technique called Classifier-Free Guidance (CFG), commonly used in image generation (like Stable Diffusion), <a href="https://youtu.be/iv-5mZ_9CPY?si=Vc6s2xT89duEEA39&t=1321" target="_blank" rel="noreferrer">explained well here</a>.<br>By training the model to predict actions both with and without the indicator, the model learns a vector space where it can mathematically separate "generic behavior" from "optimized behavior"</p>
         <ul>
           <li>It allows the model to be robust even if the advantage signal is noisy.</li>
-          <li>It enables a specific inference trick where you can "amplify" the positive signal (setting <span class="math">&beta; &gt; 1</span>), effectively steering the robot away from the average behavior and toward the positive behavior</li>
+          <li>It enables a specific inference trick where you can "amplify" the positive signal (setting $\beta > 1$), effectively steering the robot away from the average behavior and toward the positive behavior</li>
         </ul>
         
         <p><strong>3. Practical Usage</strong><br>While the math shows two separate terms being summed, the paper explains they implement this efficiently using Dropout during training.</p>
         <ul>
           <li>During Training:<br>Instead of running the model twice (once for Term 1, once for Term 2), they run it once but randomly delete the "Advantage: Positive/Negative" text token from the prompt about 30% of the time<br>            30% of the time: The model sees no tag (Simulating Term 1).<br>            70% of the time: The model sees the tag (Simulating Term 2).</li>
           <li>During Inference:<br>When the robot is actually working, they simply provide the prompt with the tag included and set to Positive:<br>[Image] + "Advantage: Positive" + "Fold laundry"<br>This forces the model to use the "Term 2" pathway it learned, generating only the actions associated with high-advantage outcomes.</li>
-          <li>Handling Human Data:<br>As discussed previously, for human demonstrations, the <span class="math">I<sub>t</sub></span> in this equation is hardcoded to <span class="math">1</span> (Positive) before the loss is even calculated6. For robot data, <span class="math">I<sub>t</sub></span> is calculated dynamically by the value model</li>
+          <li>Handling Human Data:<br>As discussed previously, for human demonstrations, the $I_t$ in this equation is hardcoded to $1$ (Positive) before the loss is even calculated. For robot data, $I_t$ is calculated dynamically by the value model</li>
         </ul>
         
         <h2>Random Thoughts</h2>
         <p>PI tied together a lot of concepts in ML and robotics to make this work. At this point it has most (if not all) of the pieces needed to scale (with enough data*), and it shows in their task success rates. Still not sure why they force-labelled human data as advantage positive. Why can't the value function judge the data accurately? Humans can reliably bring a task to completion but the robot should be more physically capable of completing the task in the most optimal way if it knew what "best actions" to take. Therefore using a human as best reference feels like it's putting an upper ceiling on the achievable skill level. This was only one specific part of fine-tuning though - ultimately the reinforcement learning algorithm does improve from it's own demonstrations in the final RECAP training stage. I also wonder whether separating the action expert and VLM will make sense in the long run. It seems unintuitive to train them as separate entities, but maybe this approach wouldn't be taken if they had endless data and compute. They're in a position where they *need* to use an open-sourced web-scale data model, so their hands are tied on using an LLM for this. In the future maybe the whole model could be diffusion, or the whole model could be text and everything is trained together on one consistent, larger dataset like the <a href="https://www.sunday.ai/" target="_blank" rel="noreferrer">Sunday Robotics "skill capture glove"</a>.</p> 
-        <p>I'm excited to see if physical intelligence goes down the world models route. If the model could learn from it's own web-scaled trained imagination it would be a very powerful way to learn any skill. This approach has been prototyped in a few places, for self driving (https://blog.comma.ai/mlsim, https://x.com/aelluswamy/status/1981644831790379245), and also for an agent that dreams how to play minecraft: https://danijar.com/project/dreamer4/. Although there's room for improvement, I think the current models *if productized properly* will make major impact on the consumer robotics space as home or factory robots. Even if they don't work 100% of the time, it would still be interesting to have physical AI around the house and get 90% of your chores completed in the process.</p>
+        <p>I'm excited to see if physical intelligence goes down the world models route. If the model could learn from it's own web-scaled trained imagination it would be a very powerful way to learn any skill. This approach has been prototyped in a few places, for self driving [<a href="https://blog.comma.ai/mlsim" target="_blank" rel="noreferrer">1</a>] [<a href="https://x.com/aelluswamy/status/1981644831790379245" target="_blank" rel="noreferrer">2</a>], and also for an agent that dreams <a href="https://danijar.com/project/dreamer4/" target="_blank" rel="noreferrer">how to play minecraft</a>. Although there's room for improvement, I think the current models *if productized properly* will make major impact on the consumer robotics space as home or factory robots. Even if they don't work 100% of the time, it would still be interesting to have physical AI around the house and get 90% of your chores completed in the process.</p>
         
         <h2>Supplemental Model Info</h2>
         
@@ -239,7 +243,7 @@
           <li>Positional encoding: SigLIP uses learned absolute 2D positional embeddings. Note: The native pre-trained weights are usually 224×224 (256 tokens); for 448×448 inputs, Gemma 3 interpolates these embeddings to match the 1024 token sequence.</li>
           <li>Class/global token: No [CLS] token is used (pool_type="none"), so the sequence length is preserved as 1024 tokens.</li>
           <li>Transformer depth: The encoder is a stack of 27 transformer blocks (matching the So400m specification).</li>
-          <li>Self-attention specifics: Each block uses 16 attention heads. With a model width of 1152, this results in 72‑dim per head (<span class="math">1152 / 16 = 72</span>) and a 1152‑dim concatenated output.</li>
+          <li>Self-attention specifics: Each block uses 16 attention heads. With a model width of 1152, this results in 72‑dim per head ($1152 / 16 = 72$) and a 1152‑dim concatenated output.</li>
           <li>Attention mechanism: Each token forms Q/K/V linearly and performs full global self-attention over all 1024 tokens.</li>
           <li>MLP block: After attention, each token goes through a 2-layer GELU MLP with a hidden size of 4304 (So400m specific width, approx 4× embedding dim).</li>
           <li>Normalization scheme: Pre-Norm architecture. Every block applies LayerNorm → Attention → Residual, then LayerNorm → MLP → Residual.</li>
@@ -258,7 +262,7 @@
           <li>Transformer depth: The decoder is a stack of 34 transformer blocks.</li>
           <li>Self-attention specifics: Each block uses 8 attention heads with a head dimension of 256. It employs Grouped-Query Attention (GQA) with 4 Key-Value heads (2:1 query-to-KV ratio). Note that the concatenated attention output (8×256 = 2048) is projected to the model's hidden size of 2560.</li>
           <li>Attention mechanism: A hybrid "5:1" sliding window approach. The model alternates 5 layers of Local Sliding Window Attention (window size 1024) followed by 1 layer of Global Attention (full context).</li>
-          <li>MLP block: After attention, tokens pass through a Gated MLP (GeGLU) with an intermediate size of 10,240 (<span class="math">&approx;4 &times;</span> the hidden dimension).</li>
+          <li>MLP block: After attention, tokens pass through a Gated MLP (GeGLU) with an intermediate size of 10,240 ($\approx 4 \times$ the hidden dimension).</li>
           <li>Normalization scheme: Uses RMSNorm for pre-normalization and post-normalization steps. It uniquely employs QK-Norm (normalizing Queries and Keys) instead of the soft-capping used in Gemma 2.</li>
           <li>Final pooling: No pooling is applied; the model maintains the sequence of hidden states for the final prediction.</li>
           <li>Projection head: The final 2560-dimensional hidden states are projected back to the vocabulary size (262,208) via a linear layer (often tied to the input embeddings).</li>
