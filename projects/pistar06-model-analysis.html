@@ -29,7 +29,7 @@
         <p>I recently went down a rabbithole trying to understand Physical Intelligence VLA models and thought this deep dive may help others doing the same. In this writeup I analyze the Physical Intelligence $\pi^*0.6$ model, a state-of-the-art brain for generalized robotics AI. Physical Intelligence has not open-sourced $\pi^*0.6$ code yet, but they have released a <a href="https://www.pi.website/download/pistar06.pdf" target="_blank" rel="noreferrer">technical white-paper</a> on the model. We can use the open sourced $\pi_0$ model as a framework, and then combine details from the whitepaper to infer what the $\pi^*0.6$ architecture is.</p>
 
         <figure class="entry-figure wide">
-          <img src="../assets/PI0.6 Model.svg" alt="π*0.6 Model diagram" />
+          <img src="../assets/pistar06-images/PI0.6 Model.svg" alt="π*0.6 Model diagram" />
           <figcaption class="figure-subtext">Diagram of the $\pi^*0.6$ VLA model</figcaption>
         </figure>
 
@@ -40,7 +40,7 @@
 
         <h2>Gemma3, the Vision and Language Backbone</h2>
         <figure class="entry-figure gemma">
-          <img src="../assets/Gemma3 Model.svg" alt="Gemma3 Vision Language Model Diagram" />
+          <img src="../assets/pistar06-images/Gemma3 Model.svg" alt="Gemma3 Vision Language Model Diagram" />
           <figcaption class="figure-subtext">Gemma3 Vision Language Model Diagram</figcaption>
         </figure>
 
@@ -60,7 +60,7 @@
         <p>Imagine two separate parts which make up the token space. The "Prefix", and the "Suffix". Fine-tuning simply tries to guess the suffix given some prefix.</p>
 
         <figure class="entry-figure wide">
-          <img src="../assets/PI0.6 Tokens - VLM Training.svg" alt="π*0.6 Tokens - VLM Training diagram" />
+          <img src="../assets/pistar06-images/PI0.6 Tokens - VLM Training.svg" alt="π*0.6 Tokens - VLM Training diagram" />
           <figcaption class="figure-subtext">The VLM token space during FAST token fine tuning</figcaption>
         </figure>
 
@@ -85,7 +85,7 @@
         <p>This time we aren't training the VLM at all, and only focusing on the flow-matching action expert instead. During this training phase, the model knows the prefix and the suffix (true actions), but noises the true actions a random amount and tries to predict the velocity matrix to de-noise them:</p>
 
         <figure class="entry-figure wide">
-          <img src="../assets/PI0.6 Tokens - Action Expert Training.svg" alt="π*0.6 Tokens - Action Expert Training diagram" />
+          <img src="../assets/pistar06-images/PI0.6 Tokens - Action Expert Training.svg" alt="π*0.6 Tokens - Action Expert Training diagram" />
           <figcaption class="figure-subtext">The VLA token space during action expert fine tuning</figcaption>
         </figure>
 
@@ -140,7 +140,7 @@
         <p>Explained visually:</p>
 
         <figure class="entry-figure wide">
-          <img src="../assets/lora_training.svg" alt="LoRA training diagram" />
+          <img src="../assets/pistar06-images/lora_training.svg" alt="LoRA training diagram" />
           <figcaption class="figure-subtext">Diagram of LoRA training for a single linear layer</figcaption>
         </figure>
 
@@ -151,7 +151,7 @@
         <p>This section is more low level, but it's the key to implementing a multi-modal like this. How does the action expert "pay attention" to the VLM's attention matrix? The trick is to dimension the flow-matching transformer model to match the dimensions of Gemma3 in the attention block only. The following diagram shows how the VLM and action models come together during the attention part of the transformer, and then separate again during MLP. The MLP dimension of the VLM and action expert don't need to match! This is how a 4-5x reduction in parameter count is unlocked for the action expert and greatly speeding up inference.</p>
 
         <figure class="entry-figure wide">
-          <img src="../assets/PI0.6 Attention.svg" alt="π*0.6 Attention diagram" />
+          <img src="../assets/pistar06-images/PI0.6 Attention.svg" alt="π*0.6 Attention diagram" />
           <figcaption class="figure-subtext">Combining attention matrices for VLM and action models</figcaption>
         </figure>
 
@@ -161,7 +161,7 @@
         <p>The major innovation in $\pi^*0.6$ versus previous models is adding reinforcement learning. Until now, the models have just been trained to imatate the training dataset - they compare outputs with the reference outputs, and backpropagate the error. RL is a completely different training paradigm where we reward the model when it does a good job. This is done by training a completely new "Value Model" to tell the VLA how close it is to achieving a reward over time. It acts as a judge, and is also called a "critic" in many RL methods for this reason.</p>
 
         <figure class="entry-figure value-model">
-          <img src="../assets/PI0.6 Value Model.svg" alt="PI0.6 Value Model diagram" />
+          <img src="../assets/pistar06-images/PI0.6 Value Model.svg" alt="PI0.6 Value Model diagram" />
           <figcaption class="figure-subtext">The Value Model of $\pi^*0.6$, based on Gemma3. It takes the same input context as the VLM.</figcaption>
         </figure>
 
