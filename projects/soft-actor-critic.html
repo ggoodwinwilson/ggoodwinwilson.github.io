@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soft Actor-Critic from Scratch | Geoff Goodwin-Wilson</title>
+  <title>Soft Actor Critic - Practical Notes | Geoff Goodwin-Wilson</title>
   <link rel="stylesheet" href="../styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
@@ -20,13 +20,14 @@
       <section class="page-intro">
         <a class="back-link" href="../index.html">← Back to projects</a>
         <p class="eyebrow">Writeup</p>
-        <h1 class="page-title">Soft Actor-Critic from Scratch</h1>
-        <div class="project-meta">2025 · Reinforcement Learning</div>
+        <h1 class="page-title">Soft Actor Critic - Practical Notes</h1>
+        <div class="project-meta">March 2025 · Reinforcement Learning</div>
+        GitHub repository → <a href="https://github.com/ggoodwinwilson/soft-actor-critic" target="_blank" rel="noreferrer">github.com/ggoodwinwilson/soft-actor-critic</a>
       </section>
 
       <article class="entry-content">
         <h2>Introduction</h2>
-        <p>This is a collection of my notes from implementing Soft Actor-Critic RL from scratch on a few different environments. I primarily wrote this page to teach SAC to myself, so I'll go over some implementation challenges and cover a few things that I struggled with or didn't completely understand.</p>
+        <p>This is a collection of my notes from implementing Soft Actor-Critic RL from scratch on a few different environments. I primarily wrote this page to teach SAC to myself, so I'll go over some implementation challenges and demystify a few things that I struggled with.</p>
 
         <!-- TODO: Add 3 images side by side here: hopper, humanoid, halfcheetah -->
         <figure class="entry-figure wide">
@@ -67,33 +68,35 @@ replay_buffer.add(data)</code></pre>
 
 <pre><code class="python">batch = replay_buffer.sample()</code></pre>
 
-        <h2>Loss Functions</h2>
-        <p>Loss functions are mathematically governing what the networks learn, so the key to understanding RL algorithms is to make sure you fully understand each loss function. In SAC we have 3 and I'll dissect each of them.</p>
+        <h2>Understanding the Loss Functions</h2>
+        <p>This is key to understanding the RL training process. Loss functions are mathematically governing what the networks learn. Most neural nets have simple mean-squared error loss. Very straightforward, but in other types of RL there's more nuance. In SAC there are 3 loss functions - I'll dissect each of them:</p>
 
-        <p><strong>1. Critic Loss (Value)</strong></p>
-        $$L_Q(\theta) = \mathbb{E}_{(s,a,r,s') \sim D} \left[ \frac{1}{2} (\underbrace{Q_\theta(s,a)}_{\text{Prediction}} - \underbrace{(r + \gamma (\min_{j=1,2} Q_{\text{targ},j}(s', a') - \alpha \log \pi_\phi(a'|s'))}_{\text{Soft Bellman Target}})^2 \right]$$
+        <p><strong>1. Critic Loss</strong></p>
+        $$L_Q(\theta) = \mathbb{E}_{(s,a,r,s') \sim D} \left[ \frac{1}{2} (\underbrace{Q_\theta(s,a)}_{\text{Prediction}} - \underbrace{(r + \gamma (\min_{j=1,2} Q_{\text{targ},j}(s', a') - \alpha \log \pi_\phi(a'|s'))}_{\text{"Soft Bellman" Target}})^2 \right]$$
 
-        <p><strong>2. Actor Loss (Policy)</strong></p>
+        <p><strong>2. Actor Loss</strong></p>
         $$L_\pi(\phi) = \mathbb{E}_{s \sim D, a \sim \pi_\phi} \left[ \underbrace{\alpha \log \pi_\phi(a|s)}_{\text{Entropy Weight}} - \underbrace{\min_{j=1,2} Q_{\theta_j}(s, a)}_{\text{Estimated Value}} \right]$$
 
-        <p><strong>3. Alpha Loss (Entropy Temperature)</strong></p>
+        <p><strong>3. Alpha Loss</strong></p>
         $$L(\alpha) = \mathbb{E}_{a \sim \pi_\phi} \left[ \underbrace{-\alpha}_{\text{Learned Weight}} (\underbrace{\log \pi_\phi(a|s) + \bar{H}}_{\text{Entropy Deviation}}) \right]$$
 
-        <h3>Critic Loss (Q Loss)</h3>
+        <h3>Critic (Q Network) Loss</h3>
         $$J_Q(\theta) = \mathbb{E}_{(s,a,r,s') \sim D} \left[ \frac{1}{2} (\underbrace{Q_\theta(s,a)}_{\text{Current Prediction}} - (\underbrace{r}_{\text{Reward}} + \underbrace{\gamma}_{\text{Discount}} (\underbrace{\min_{j=1,2} Q_{\text{targ},j}(s', a')}_{\text{Clipped Double-Q Target}} - \underbrace{\alpha \log \pi_\phi(a'|s')}_{\text{Entropy Bonus}})))^2 \right]$$
 
-        <p>There are actually four completely separate Q networks here, $Q_\theta$ and $Q_{\text{targ}}$, and then each is a double-Q network. $Q_\theta$, the prediction, is straightforward. For our sampled episodes, we just compute forward passes for each state, action pair when we start the training process. The tricky one is the $Q_{\text{targ}}$ network. The Target ($Q_{\text{targ}}(s', a')$) is calculated using the Target Network Weights. These are a separate, "lagging" copy of the online weights. They are NOT updated by the optimizer. Instead, they follow the online weights slowly using "Polyak averaging". It's not strictly necessary, it's just one approach to creating the target Q network.</p>
+        <p>There are actually four completely separate Q networks in SAC which are all present in the loss function: $Q_\theta$ and $Q_{\text{targ}}$, and then each is a double-Q network, making 4 total. $Q_\theta$, the "current prediction" term, is straightforward. For our sampled episodes, we just compute forward passes for each state and action pair whenever we enter the training function. The tricky one is the $Q_{\text{targ}}$ network. The Target ($Q_{\text{targ}}(s', a')$) is calculated using the Target Network Weights. These are a separate, "lagging" copy of the current $Q_\theta$ weights. They are NOT updated by the optimizer. Instead, they follow the $Q_\theta$ weights slowly using "Polyak averaging". This is just one common approach to creating the target Q network, the weights can be updated in multiple ways.</p>
 
-        <p>Lastly we have the entropy term included in the target. It's subtracted because log prob is always negative, so this makes a positive incentive for the prediction Q network to assign high value to high entropy actions. Think of it this way - "Actions with high entropy should result in a high Q value". We're training the network to reflect this.</p>
-
+        <p>Lastly we have the entropy term included in the target. It's subtracted because log prob is always negative, so this makes a positive incentive for the prediction Q network to assign high value to high entropy actions. Think of it this way: Actions with high entropy should result in a high Q value. We're training the network to reflect this.</p>
+        
         $$\text{Target} = \text{Reward} + \gamma (\text{Future Value} + \underbrace{\text{Entropy Bonus}}_{\text{High for random actions}})$$
-
+        
         <p>We use the learned parameter alpha to reach the target entropy, which is a SAC hyperparameter chosen based on the environment. It has its own loss - more on that later. The Q loss is simply the mean-squared-error (MSE) between the prediction and target.</p>
+        
+        <p>As always, the goal of RL is to maximize rewards, and we can clearly see "r", the reward signal in this Q loss expression. It's important to realize that reward is the only true signal in the Q loss. The other networks are gradually "bootstrapped" from the reward signal, and as training progresses, become more accurate. Just to drive this point home, <i>everything</i> hinges on the reward signal in RL. The Q networks are all trained on what actions result in high rewards, and the actor is then trained to produce the highest possible Q network output. <b>It all stems from rewards.</b></p> 
 
-        <h3>Actor Loss</h3>
+        <h3>Actor (Policy) Loss</h3>
         $$L_\pi(\phi) = \mathbb{E}_{s \sim D, a \sim \pi_\phi} \left[ \underbrace{\alpha \log \pi_\phi(a|s)}_{\text{Entropy Weight}} - \underbrace{\min_{j=1,2} Q_{\theta_j}(s, a)}_{\text{Estimated Value}} \right]$$
 
-        <p>Again, entropy is rewarded with the action logprob which explains the first term. The second term just reflects the quality of the chosen action. Minimizing the negative of this will result in backpropping gradients that increase Q, which is ultimately the objective of the actor. A key note on this is that we DON'T want to change any gradients in the Q network itself, just gradients in the actor network input to the Q network. The Q network itself is frozen for this update.</p>
+        <p>Entropy is rewarded with the action randomness (actor logprob) which explains the first term. The second term just reflects the quality of the chosen action. Minimizing the negative of this will result in backpropagating gradients that increase Q, which is ultimately the objective of the actor. A key note on this is that we DON'T want to change any gradients in the Q network itself, just gradients in the actor network input to the Q network. The Q network itself is frozen for this update.</p>
 
         <h3>Alpha Loss</h3>
         $$L(\alpha) = \mathbb{E}_{a_t \sim \pi_t} \left[ \underbrace{-\alpha}_{\text{Exploration Weight}} ( \underbrace{\log \pi_t(a_t|s_t) + \bar{\mathcal{H}}}_{\text{Entropy Gap}} ) \right]$$
@@ -101,24 +104,25 @@ replay_buffer.add(data)</code></pre>
         <p>In the loss function, the term $(\log \pi_t(a|s) + \bar{\mathcal{H}})$ is the error signal. Since Entropy $\mathcal{H} \approx -\log \pi$, this term essentially calculates:</p>
         $$(\bar{\mathcal{H}} - \text{Current Entropy})$$
 
-        <p>The goal of alpha is to tune our actor/critic to maintain our target entropy, which is a number we choose at the beginning of training. It's usually $-\text{Dim}(\text{action space})$, i.e. if you have 8 things to control, target entropy will be -8.</p>
+        <p>The goal of alpha is to tune our actor/critic to maintain our target entropy, which is a number we choose at the beginning of training. It's usually $-\text{Dim}(\text{action space})$, i.e., if you have 8 things to control, target entropy will be -8.</p>
+        <p>Alpha is NOT a network in itself. It is simply a coefficient which is changed during training to ensure we always meet our entropy (randomness) target.</p>
 
         <h2>Detaching Gradients</h2>
-        <p>All three loss functions have "detached" term(s) when we don't want to backpropagate that specific term.</p>
+        <p>All three loss functions have "detached" term(s) when we don't want to backpropagate that specific term in the loss function. Basically, </p>
 
         <p><strong>1. Critic Loss ($L_Q$)</strong></p>
         <p>The critic treats the target value as a fixed ground truth. We detach the entire target calculation so gradients do not flow into the target network or the actor policy during this step.</p>
         $$L_Q(\theta) = \mathbb{E}_{\tau \sim \mathcal{D}} \left[ \frac{1}{2} \left( Q_\theta(s,a) - \underbrace{(r + \gamma(Q_{\bar{\theta}}(s', a') - \alpha \log \pi_\phi(a'|s')))}_{\text{Detached Target (stop-gradient)}} \right)^2 \right]$$
 
         <p><strong>2. Actor Loss ($L_\pi$)</strong></p>
-        <p>The actor maximizes the Q-value. We propagate gradients through the action $a_\phi$, but we detach the Q-network weights ($\theta$) so we don't accidentally update the critic's value estimates—only the actor's choices.</p>
+        <p>The actor maximizes the Q-value. We propagate gradients through the action $a_\phi$, but we freeze the Q-network weights ($\theta$) so we don't accidentally update the critic's value estimates—only the actor's choices.</p>
         $$L_\pi(\phi) = \mathbb{E}_{s \sim \mathcal{D}} \left[ \alpha \log \pi_\phi(a_\phi|s) - \underbrace{Q_\theta(s, a_\phi)}_{\text{Fixed Q-Params (no } \theta \text{ grad)}} \right]$$
 
         <p><strong>3. Alpha Loss ($L_\alpha$)</strong></p>
         <p>The temperature $\alpha$ adjusts based on the "Entropy Gap." We detach the policy term so $\alpha$ reacts to the current entropy level, rather than the policy shifting just to satisfy the alpha constraint.</p>
         $$L(\alpha) = \mathbb{E}_{s \sim \mathcal{D}} \left[ -\alpha \cdot \underbrace{(\log \pi_\phi(a|s) + \bar{\mathcal{H}})}_{\text{Detached Policy (no } \phi \text{ grad)}} \right]$$
 
-        <p>In Python we update the losses one by one to avoid mixing gradients. After each forward pass we make sure to consume the gradients with a backward pass. Note that we compute the Q target with <code>torch.no_grad()</code>.</p>
+        <p>In Python we update the losses and backpropagate one by one to avoid mixing gradients. After each forward pass, make sure to consume the gradients with a backward pass. Note that we compute the Q target with <code>torch.no_grad()</code>.</p>
 
 <pre><code class="python"># ========== CRITIC UPDATE ==========
 # Q(s, a) using actions from replay buffer
