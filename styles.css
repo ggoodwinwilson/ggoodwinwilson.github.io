@@ -297,6 +297,12 @@ img { max-width: 100%; display: block; }
   object-fit: contain;
 }
 
+.project-thumb.patent-thumb img {
+  width: 90%;
+  height: 90%;
+  transform: translateY(-8%);
+}
+
 .project-thumb.placeholder {
   background: radial-gradient(circle at 30% 30%, #0f4d64 0%, #0f4d64 45%, #0d3950 100%);
   color: #f8fafc;
@@ -376,6 +382,17 @@ blockquote {
   border-radius: 10px;
   background: #fff;
   margin: 0 auto;
+}
+
+.pdf-embed {
+  display: block;
+  width: 100%;
+  height: 85vh;
+  min-height: 600px;
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
 }
 
 .figure-row {
